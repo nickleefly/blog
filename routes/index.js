@@ -89,6 +89,10 @@ module.exports = function(app){
   });
   app.post('/post',function(req,res){
   });
-  app.get('/logout',function(req,res){
+
+  app.get('/logout', function(req, res){
+    req.session.user = null;
+    req.flash('success','successful logout!');
+    res.redirect('/');
   });
 };
