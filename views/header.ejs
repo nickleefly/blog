@@ -13,8 +13,20 @@
 
 <nav>
 <span><a title="home" href="/">home</a></span>
-<span><a title="login" href="/login">login</a></span>
-<span><a title="register" href="/reg">register</a></span>
+<% if(locals.user){ %>
+  <span><a title="post" href="/post">post</a></span>
+  <span><a title="logout" href="/logout">logout</a></span>
+<% } else { %>
+  <span><a title="login" href="/login">login</a></span>
+  <span><a title="register" href="/reg">register</a></span>
+<% } %>
 </nav>
 
 <article>
+
+<% if (locals.success) { %>
+  <div ><%= locals.success %></div>
+<% } %>
+<% if (locals.error) { %>
+  <div><%= locals.error %> </div>
+<% } %>

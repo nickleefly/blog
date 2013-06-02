@@ -7,8 +7,14 @@ var crypto = require('crypto'),
 
 module.exports = function(app){
   app.get('/',function(req,res){
-    res.render('index', { title: 'home' });
+    res.render('index',{
+      title:'home',
+      user: req.session.user,
+      success:req.flash('success').toString(),
+      error:req.flash('error').toString()
+    });
   });
+
   app.get('/reg',function(req,res){
     res.render('reg', { title: 'register' });
   });
