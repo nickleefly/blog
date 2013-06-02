@@ -9,6 +9,9 @@ module.exports = function(app){
   app.get('/',function(req,res){
     res.render('index', { title: 'home' });
   });
+  app.get('/reg',function(req,res){
+    res.render('reg', { title: 'register' });
+  });
 
   app.post('/reg', function(req,res){
     var name = req.body.name,
@@ -49,8 +52,6 @@ module.exports = function(app){
     });
   });
 
-  app.post('/reg',function(req,res){
-  });
   app.get('/login',function(req,res){
     res.render('login', { title: 'login' });
   });
