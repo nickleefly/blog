@@ -1,1 +1,3 @@
-# a mini blog using express mongodb and connect-mongo
+# a mini blog 
+
+using express mongodb and connect-mongo
