@@ -61,8 +61,29 @@ module.exports = function(app){
   app.get('/login',function(req,res){
     res.render('login', { title: 'login' });
   });
-  app.post('/login',function(req,res){
+
+  app.post('/login', function(req, res){
+    //generate md5 sha
+    var md5 = crypto.createHash('md5'),
+        password = md5.update(req.body.password).digest('hex');
+    //check if user exists
+    User.get(req.body.name, function(err, user){
+      if(!user){
+        req.flash('error', 'user doesn\'t exists!'); 
+        return res.redirect('/login'); 
+      }
+      //check if password matches
+      if(user.password != password){
+        req.flash('error', 'password doesn\'s match!'); 
+        return res.redirect('/login');
+      }
+      //save user into session
+      req.session.user = user;
+      req.flash('success','successful login!');
+      res.redirect('/');
+    });
   });
+
   app.get('/post',function(req,res){
     res.render('post', { title: 'post' });
   });
