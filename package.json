@@ -10,7 +10,8 @@
     "ejs": "*",
     "mongodb": "*",
     "connect-mongo": "*",
-    "connect-flash": "*"
+    "connect-flash": "*",
+		"markdown": "~0.4.0"
   },
   "devDependencies": {
     "supervisor": "~0.5.2"
