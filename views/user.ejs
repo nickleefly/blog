@@ -2,8 +2,8 @@
 <% posts.forEach(function(post, index){ %>
   <p><h2><a href="/u/<%= post.name %>/<%= post.time.day %>/<%= post.title %>"><%= post.title %></a></h2></p>
   <p class="info">
-    author：<a href="/u/<%= post.name %>"><%= post.name %></a> |
-    date：<%= post.time.minute %>
+    author：<a href="/u/<%= post.name %>"><%= post.name %></a> | 
+    date  ：<%= post.time.minute %>
   </p>
   <p><%- post.post %></p>
 <% }) %>
