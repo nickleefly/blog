@@ -135,20 +135,20 @@ module.exports = function(app){
     req.flash('success','successful logout!');
     res.redirect('/');
   });
-  app.get('u/:name', function(req, res){
+  app.get('/u/:name', function(req,res){
     //check if use exists
-    User.get(req.params.name, function(err, user) {
+    User.get(req.params.name, function(err, user){
       if(!user){
-        req.flash('error', 'user doesn\'t exist');
+        req.flash('error','user doesn\' exist');
         return res.redirect('/');
       }
       //return all user article
       Post.getAll(user.name, function(err, posts){
-        if(err) {
-          req.flash('error', err);
+        if(err){
+          req.flash('error',err);
           return res.redirect('/');
         }
-        res.render('user', {
+        res.render('user',{
           title: user.name,
           posts: posts,
           user : req.session.user,
@@ -156,20 +156,20 @@ module.exports = function(app){
           error : req.flash('error').toString()
         });
       });
-    });
+    }); 
   });
-  app.get('u/:name/:day/:title', function(req, res){
+  app.get('/u/:name/:day/:title', function(req,res){
     Post.getOne(req.params.name, req.params.day, req.params.title, function(err, post){
-      if(err) {
-        req.flash('error', err);
+      if(err){
+        req.flash('error',err);
         return res.redirect('/');
       }
-      res.render('article', {
+      res.render('article',{
         title: req.params.title,
-        posts: post,
-        user : req.session.user,
-        success : req.flash('success').toString(),
-        error : req.flash('error').toString()
+        post: post,
+        user: req.session.user,
+        success: req.flash('success').toString(),
+        error: req.flash('error').toString()
       });
     });
   });
