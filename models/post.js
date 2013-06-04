@@ -48,7 +48,7 @@ Post.prototype.save = function(callback) {//save content
   });
 };
 
-Post.getAll = function(name, callback) {//read article and content
+Post.get = function(name, callback) {//read article and content
   //open db
   mongodb.open(function (err, db) {
     if (err) {
@@ -76,34 +76,6 @@ Post.getAll = function(name, callback) {//read article and content
 				  doc.post = markdown.toHTML(doc.post);
 			  });
         callback(null, docs);//success return result in an array
-      });
-    });
-  });
-};
-
-Post.getOne = function(name, day, title, callback) { //get one article
-  //open db
-  mongodb.open(function (err, db) {
-    if (err) {
-      return callback(err);
-    }
-
-    //read posts collection
-    db.collection('posts', function(err, collection) {
-      if (err) {
-        mongodb.close();
-        return callback(err);
-      }
-
-      // find article according to name time and title
-      collection.findOne({"name": name, "time.day": day, "title": title}, function (err, doc) {
-        mongodb.close();
-        if (err) {
-          callback(err, null);
-        }
-        // render markdown to html
-        doc.post = markdown.toHTML(doc.post);
-        callback(null, doc); //return article
       });
     });
   });
