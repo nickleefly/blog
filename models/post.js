@@ -21,10 +21,11 @@ Post.prototype.save = function(callback) {//save content
   }
   //document to save into db
   var post = {
-      name: this.name,
-      time: time,
-      title:this.title,
-      post: this.post
+    name: this.name,
+    time: time,
+    title:this.title,
+    post: this.post,
+    comments: []
   };
   //open db
   mongodb.open(function (err, db) {
@@ -102,7 +103,12 @@ Post.getOne = function(name, day, title, callback) { //get one article
           callback(err, null);
         }
         // render markdown to html
-        doc.post = markdown.toHTML(doc.post);
+        if(doc){
+          doc.post = markdown.toHTML(doc.post);
+          doc.comments.forEach(function(comment){
+            comment.content = markdown.toHTML(comment.content);
+          });
+        }
         callback(null, doc); //return article
       });
     });

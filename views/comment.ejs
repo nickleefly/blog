@@ -1,0 +1,20 @@
+<br />
+<% post.comments.forEach(function(comment, index){ %>
+  <p><a href="<%= comment.website %>"><%= comment.name %></a>
+  <span class="info"> replied at <%= comment.time %></span></p>
+  <p><%- comment.content %></p>
+<% }) %>
+
+<form method="post">
+<% if(locals.user){ %>
+  name：<input type="text" name="name" value="<%= locals.user.name %>" /><br />
+  email：<input type="text" name="email" value="<%= locals.user.email %>" /><br />
+  website：<input type="text" name="website" value="/u/<%= locals.user.name %>" /><br />
+<% } else { %>
+  name：<input type="text" name="name" /><br />
+  email：<input type="text" name="email" /><br />
+  website：<input type="text" name="website" value="http://" /><br />
+<% } %>
+  <textarea name="content" rows="5" cols="80"></textarea><br />
+  <input type="submit" value="comment" />
+</form>
