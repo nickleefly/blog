@@ -8,8 +8,10 @@ var crypto = require('crypto'),
     Comment = require('../models/comment.js');
 
 module.exports = function(app){
+  // check if its first page, change pages into number
   app.get('/', function(req,res){
-    Post.getAll(null, function(err, posts){
+    var page = req.query.p?parseInt(req.query.p):1;
+    Post.getTen(null, page, function(err, posts){
       if(err){
         posts = [];
       } 
@@ -17,6 +19,8 @@ module.exports = function(app){
         title: 'home',
         user: req.session.user,
         posts: posts,
+        page: page,
+        postsLen: posts.length,
         success: req.flash('success').toString(),
         error: req.flash('error').toString()
       });
@@ -137,6 +141,7 @@ module.exports = function(app){
     res.redirect('/');
   });
   app.get('/u/:name', function(req,res){
+    var page = req.query.p?parseInt(req.query.p):1;
     //check if use exists
     User.get(req.params.name, function(err, user){
       if(!user){
@@ -144,7 +149,7 @@ module.exports = function(app){
         return res.redirect('/');
       }
       //return all user article
-      Post.getAll(user.name, function(err, posts){
+      Post.getTen(user.name, page, function(err, posts){
         if(err){
           req.flash('error',err);
           return res.redirect('/');
@@ -152,6 +157,8 @@ module.exports = function(app){
         res.render('user',{
           title: user.name,
           posts: posts,
+          page: page,
+          postsLen: posts.length,
           user : req.session.user,
           success : req.flash('success').toString(),
           error : req.flash('error').toString()

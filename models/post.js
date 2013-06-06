@@ -49,7 +49,7 @@ Post.prototype.save = function(callback) {//save content
   });
 };
 
-Post.getAll = function(name, callback) {//read article and content
+Post.getTen = function(name, page, callback) {//read article and content
   //open db
   mongodb.open(function (err, db) {
     if (err) {
@@ -66,7 +66,7 @@ Post.getAll = function(name, callback) {//read article and content
         query.name = name;
       }
       //search query string
-      collection.find(query).sort({
+      collection.find(query, {skip: (page - 1)*10, limit: 10}).sort({
         time: -1
       }).toArray(function (err, docs) {
         mongodb.close();
