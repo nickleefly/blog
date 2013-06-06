@@ -272,6 +272,10 @@ module.exports = function(app){
       res.redirect('back');
     });
   });
+
+  app.all('*', function(req,res){
+    res.render("404");
+  });
 };
 
 function checkLogin(req, res, next){
