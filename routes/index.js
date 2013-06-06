@@ -142,6 +142,15 @@ module.exports = function(app){
     res.redirect('/');
   });
 
+  app.get('/links', function(req,res){
+    res.render('links',{
+      title: 'friend links',
+      user: req.session.user,
+      success: req.flash('success').toString(),
+      error: req.flash('error').toString()
+    });
+  });
+
   app.get('/search', function(req,res){
     Post.search(req.query.keyword, function(err, posts){
       if(err){
