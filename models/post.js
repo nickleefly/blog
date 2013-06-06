@@ -27,7 +27,8 @@ Post.prototype.save = function(callback) {//save content
     title:this.title,
     tags: this.tags,
     post: this.post,
-    comments: []
+    comments: [],
+    pv: 0
   };
   //open db
   mongodb.open(function (err, db) {
@@ -113,6 +114,8 @@ Post.getOne = function(name, day, title, callback) { //get one article
         }
         callback(null, doc); //return article
       });
+      //increase 1 to pv
+      collection.update({"name":name,"time.day":day,"title":title},{$inc:{"pv":1}});
     });
   });
 };

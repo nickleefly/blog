@@ -12,6 +12,7 @@
     <% }) %>
   </p>
   <p><%- post.post %></p>
+  <p class="info">read：<%= post.pv %> | comment：<%= post.comments.length %></p>
 <% }) %>
 <%- include paging %>
 <%- include footer %>
