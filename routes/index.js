@@ -123,7 +123,8 @@ module.exports = function(app){
   app.post('/post', checkLogin);
   app.post('/post', function(req, res){
     var currentUser = req.session.user,
-        post = new Post(currentUser.name, req.body.title, req.body.post);
+        tags = [{"tag":req.body.tag1},{"tag":req.body.tag2},{"tag":req.body.tag3}],
+        post = new Post(currentUser.name, req.body.title, tags, req.body.post);
     post.save(function(err){
       if(err){
         req.flash('error', err); 
@@ -140,6 +141,7 @@ module.exports = function(app){
     req.flash('success','successful logout!');
     res.redirect('/');
   });
+
   app.get('/u/:name', function(req,res){
     var page = req.query.p?parseInt(req.query.p):1;
     //check if use exists
@@ -166,6 +168,7 @@ module.exports = function(app){
       });
     }); 
   });
+
   app.get('/archive', function(req,res){
     Post.getArchive(function(err, posts){
       if(err){
@@ -181,6 +184,39 @@ module.exports = function(app){
       });
     });
   });
+
+  app.get('/tags', function(req,res){
+    Post.getTags(function(err, posts){
+      if(err){
+        req.flash('error',err); 
+        return res.redirect('/');
+      }
+      res.render('tags',{
+        title: 'tags',
+        posts: posts,
+        user: req.session.user,
+        success: req.flash('success').toString(),
+        error: req.flash('error').toString()
+      });
+    });
+  });
+
+  app.get('/tags/:tag', function(req,res){
+    Post.getTag(req.params.tag, function(err, posts){
+      if(err){
+        req.flash('error',err); 
+        return res.redirect('/');
+      }
+      res.render('tag',{
+        title: 'TAG:'+req.params.tag,
+        posts: posts,
+        user: req.session.user,
+        success: req.flash('success').toString(),
+        error: req.flash('error').toString()
+      });
+    });
+  });
+
   app.get('/u/:name/:day/:title', function(req,res){
     Post.getOne(req.params.name, req.params.day, req.params.title, function(err, post){
       if(err){

@@ -3,6 +3,12 @@
 <p class="info">
   author：<a href="/u/<%= post.name %>"><%= post.name %></a> | 
   date：<%= post.time.minute %>
+    tags：
+    <% post.tags.forEach(function(tag, index){ %>
+      <% if(tag.tag){ %>
+        <a class="tag" href="/tags/<%= tag.tag %>"><%= tag.tag %></a>
+      <% } %>
+    <% }) %>
  </p>
  <p><%- post.post %></p>
 <%- include comment %>

@@ -1,9 +1,10 @@
 var mongodb = require('./db'),
     markdown = require('markdown').markdown;
 
-function Post(name, title, post) {
+function Post(name, title, tags, post) {
   this.name = name;
-  this.title= title;
+  this.title = title;
+  this.tags = tags;
   this.post = post;
 }
 
@@ -24,6 +25,7 @@ Post.prototype.save = function(callback) {//save content
     name: this.name,
     time: time,
     title:this.title,
+    tags: this.tags,
     post: this.post,
     comments: []
   };
@@ -127,6 +129,52 @@ Post.getArchive = function(callback) {//return all articles
       }
       //return array including name, time and title
       collection.find({},{"name":1,"time":1,"title":1}).sort({
+        time:-1
+      }).toArray(function(err, docs){
+        mongodb.close();
+        if (err) {
+          callback(err, null);
+        }
+        callback(null, docs);
+      });
+    });
+  });
+};
+
+Post.getTags = function(callback) {//return tags
+  mongodb.open(function (err, db) {
+    if (err) {
+      return callback(err);
+    }
+    db.collection('posts', function(err, collection) {
+      if (err) {
+        mongodb.close();
+        return callback(err);
+      }
+      //distinct get different value for specific key
+      collection.distinct("tags.tag",function(err, docs){
+        mongodb.close();
+        if (err) {
+          callback(err, null);
+        }
+        callback(null, docs);
+      });
+    });
+  });
+};
+
+Post.getTag = function(tag, callback) {//return all articles for specific tag
+  mongodb.open(function (err, db) {
+    if (err) {
+      return callback(err);
+    }
+    db.collection('posts', function(err, collection) {
+      if (err) {
+        mongodb.close();
+        return callback(err);
+      }
+      //return array only include name, time and title
+      collection.find({"tags.tag":tag},{"name":1,"time":1,"title":1}).sort({
         time:-1
       }).toArray(function(err, docs){
         mongodb.close();
