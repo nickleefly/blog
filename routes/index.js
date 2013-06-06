@@ -126,7 +126,7 @@ module.exports = function(app){
         tags = [{"tag":req.body.tag1},{"tag":req.body.tag2},{"tag":req.body.tag3}];
     var md5 = crypto.createHash('md5'),
         email_MD5 = md5.update(currentUser.email.toLowerCase()).digest('hex'),
-        head = "http://www.gravatar.com/avatar/" + email_MD5,
+        head = "http://www.gravatar.com/avatar/" + email_MD5 + "?s=48",
         post = new Post(currentUser.name, head, req.body.title, tags, req.body.post);
     post.save(function(err){
       if(err){
