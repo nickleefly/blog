@@ -189,3 +189,28 @@ Post.getTag = function(tag, callback) {//return all articles for specific tag
     });
   });
 };
+
+//return articles which have the searched keywords
+Post.search = function(keyword, callback) {
+  mongodb.open(function (err, db) {
+    if (err) {
+      return callback(err);
+    }
+    db.collection('posts', function(err, collection) {
+      if (err) {
+        mongodb.close();
+        return callback(err);
+      }
+      var pattern = new RegExp("^.*"+keyword+".*$", "i");
+      collection.find({"title":pattern},{"name":1,"time":1,"title":1}).sort({
+        time:-1
+      }).toArray(function(err, docs){
+        mongodb.close();
+         if (err) {
+         callback(err, null);
+        }
+        callback(null, docs);
+      });
+    });
+  });
+};

@@ -142,6 +142,22 @@ module.exports = function(app){
     res.redirect('/');
   });
 
+  app.get('/search', function(req,res){
+    Post.search(req.query.keyword, function(err, posts){
+      if(err){
+        req.flash('error',err); 
+        return res.redirect('/');
+      }
+      res.render('search',{
+        title: "SEARCH:"+req.query.keyword,
+        posts: posts,
+        user: req.session.user,
+        success: req.flash('success').toString(),
+        error: req.flash('error').toString()
+      });
+    });
+  });
+
   app.get('/u/:name', function(req,res){
     var page = req.query.p?parseInt(req.query.p):1;
     //check if use exists
