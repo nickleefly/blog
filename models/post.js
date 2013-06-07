@@ -204,7 +204,7 @@ Post.search = function(keyword, callback) {
         return callback(err);
       }
       var pattern = new RegExp("^.*"+keyword+".*$", "i");
-      collection.find({"title":pattern},{"name":1,"time":1,"title":1}).sort({
+      collection.find({ $or: [ {"title":pattern}, {"post":pattern} ] },{"name":1,"time":1,"title":1}).sort({
         time:-1
       }).toArray(function(err, docs){
         mongodb.close();
