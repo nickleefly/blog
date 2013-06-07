@@ -1,5 +1,4 @@
 <%- include header %>
-<link rel="stylesheet" href="../../../stylesheets/style.css">
 <% posts.forEach(function(post, index){ %>
   <p>
     <h2><a href="/u/<%= post.name %>/<%= post.time.day %>/<%= post.title %>"><%= post.title %></a></h2>
