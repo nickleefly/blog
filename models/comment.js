@@ -14,13 +14,9 @@ Comment.prototype.save = function(callback) {
       day = this.day,
       title = this.title,
       comment = this.comment;
-  mongodb.open(function (err, db) {
-    if (err) {
-      return callback(err);
-    }
-    db.collection('posts', function (err, collection) {
+
+    mongodb.collection('posts', function (err, collection) {
       if (err) {
-        mongodb.close();
         return callback(err);
       }
       //depend on name time and title add comment
@@ -29,9 +25,8 @@ Comment.prototype.save = function(callback) {
       , {$push:{"comments":comment}}
       , {new: true}
       , function (err,comment) {
-          mongodb.close();
           callback(null);
       });   
     });
-  });
+
 };
