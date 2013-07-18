@@ -1,4 +1,8 @@
 var mongodb = require('./db');
+var items;
+mongodb.get(function(client) {
+  items = new mongodb.Collection(client, 'users');
+});
 
 function User(user){
   this.name = user.name;
@@ -16,37 +20,27 @@ User.prototype.save = function(callback) {//save user information
       email: this.email
   };
 
-    //read users collection
-    mongodb.collection('users', function(err, collection){
-      if(err){
-        return callback(err);
-      }
-      //insert data into users collections
-      collection.insert(user,{safe: true}, function(err, user){
-        callback(err, user);//success return inserted user information
-      });
+  mongodb.get(function() {
+    //insert data into users collections
+    items.insert(user,{safe: true}, function(err, user){
+      callback(err, user);//success return inserted user information
     });
+  });
 
 };
 
 User.get = function(name, callback){//read user information
-
-    //read users collections
-    mongodb.collection('users', function(err, collection){
-      if(err){
-        return callback(err);
+  mongodb.get(function() {
+    //search name 
+    items.findOne({
+      name: name
+    },function(err, doc){
+      if(doc){
+        var user = new User(doc);
+        callback(err, user);//success return searched user
+      } else {
+        callback(err, null);//failed return null
       }
-      //search name 
-      collection.findOne({
-        name: name
-      },function(err, doc){
-        if(doc){
-          var user = new User(doc);
-          callback(err, user);//success return searched user
-        } else {
-          callback(err, null);//failed return null
-        }
-      });
     });
-
+  });
 };

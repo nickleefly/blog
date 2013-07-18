@@ -1,4 +1,8 @@
 var mongodb = require('./db');
+var items;
+mongodb.get(function(client) {
+  items = new mongodb.Collection(client, 'posts');
+});
 
 function Comment(name, day, title, comment) {
   this.name = name;
@@ -15,18 +19,14 @@ Comment.prototype.save = function(callback) {
       title = this.title,
       comment = this.comment;
 
-    mongodb.collection('posts', function (err, collection) {
-      if (err) {
-        return callback(err);
-      }
-      //depend on name time and title add comment
-      collection.findAndModify({"name":name,"time.day":day,"title":title}
-      , [ ['time',-1] ]
-      , {$push:{"comments":comment}}
-      , {new: true}
-      , function (err,comment) {
-          callback(null);
-      });   
+  mongodb.get(function() {
+    //depend on name time and title add comment
+    items.findAndModify({"name":name,"time.day":day,"title":title}
+    , [ ['time',-1] ]
+    , {$push:{"comments":comment}}
+    , {new: true}
+    , function (err,comment) {
+        callback(null);
     });
-
+  });
 };
