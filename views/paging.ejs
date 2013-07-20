@@ -1,10 +1,10 @@
 <br />
 <div>
-  <% if(page-1){ %>
+  <% if(!isFistPage){ %>
     <span class="lastpage"><a title="previous" href="?p=<%= page-1 %>">previous</a></span>
   <% } %>
 
-  <% if(postsLen==10){ %>
+  <% if(!isLastPage){ %>
     <span class="nextpage"><a title="next" href="?p=<%= page+1 %>">next</a></span>
   <% } %>
 </div>

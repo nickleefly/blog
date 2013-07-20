@@ -15,7 +15,6 @@ User.prototype.save = function(callback) {//save user information
       password: this.password,
       email: this.email
   };
-  mongodb.close();
   //open mongodb database
   mongodb.open(function(err, db){
     if(err){
@@ -37,7 +36,6 @@ User.prototype.save = function(callback) {//save user information
 };
 
 User.get = function(name, callback){//read user information
-  mongodb.close();
   //open db
   mongodb.open(function(err, db){
     if(err){

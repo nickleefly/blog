@@ -11,7 +11,7 @@ module.exports = function(app){
   // check if its first page, change pages into number
   app.get('/', function(req,res){
     var page = req.query.p?parseInt(req.query.p):1;
-    Post.getTen(null, page, function(err, posts){
+    Post.getTen(null, page, function(err, posts, total){
       if(err){
         posts = [];
       } 
@@ -20,7 +20,8 @@ module.exports = function(app){
         user: req.session.user,
         posts: posts,
         page: page,
-        postsLen: posts.length,
+        isFirstPage: (page - 1) == 0,
+        isLastPage: ((page - 1) * 10 + posts.length) == total,
         success: req.flash('success').toString(),
         error: req.flash('error').toString()
       });
@@ -188,7 +189,8 @@ module.exports = function(app){
           title: user.name,
           posts: posts,
           page: page,
-          postsLen: posts.length,
+          isFirstPage: (page - 1) == 0,
+          isLastPage: ((page - 1) * 10 + posts.length) == total,
           user : req.session.user,
           success : req.flash('success').toString(),
           error : req.flash('error').toString()

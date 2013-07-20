@@ -32,7 +32,6 @@ Post.prototype.save = function(callback) {//save content
     comments: [],
     pv: 0
   };
-  mongodb.close();
   //open db
   mongodb.open(function (err, db) {
     if (err) {
@@ -56,7 +55,6 @@ Post.prototype.save = function(callback) {//save content
 };
 
 Post.getTen = function(name, page, callback) {//read article and content
-  mongodb.close();
   //open db
   mongodb.open(function (err, db) {
     if (err) {
@@ -72,25 +70,26 @@ Post.getTen = function(name, page, callback) {//read article and content
       if (name) {
         query.name = name;
       }
-      //search query string
-      collection.find(query, {skip: (page - 1)*10, limit: 10}).sort({
-        time: -1
-      }).toArray(function (err, docs) {
-        mongodb.close();
-        if (err) {
-          callback(err, null);//failed return null
-        }
-				docs.forEach(function(doc) {
-				  doc.post = markdown.toHTML(doc.post);
-			  });
-        callback(null, docs);//success return result in an array
+      collection.count(function(err, total){
+        //search query string
+        collection.find(query, {skip: (page - 1)*10, limit: 10}).sort({
+          time: -1
+        }).toArray(function (err, docs) {
+          mongodb.close();
+          if (err) {
+            callback(err, null);//failed return null
+          }
+  				docs.forEach(function(doc) {
+  				  doc.post = markdown.toHTML(doc.post);
+  			  });
+          callback(null, docs, total);//success return result in an array
+        });
       });
     });
   });
 };
 
 Post.getOne = function(name, day, title, callback) { //get one article
-  mongodb.close();
   //open db
   mongodb.open(function (err, db) {
     if (err) {
@@ -126,7 +125,6 @@ Post.getOne = function(name, day, title, callback) { //get one article
 };
 
 Post.getArchive = function(callback) {//return all articles
-  mongodb.close();
   mongodb.open(function (err, db) {
     if (err) {
       return callback(err);
@@ -151,7 +149,6 @@ Post.getArchive = function(callback) {//return all articles
 };
 
 Post.getTags = function(callback) {//return tags
-  mongodb.close();
   mongodb.open(function (err, db) {
     if (err) {
       return callback(err);
@@ -174,7 +171,6 @@ Post.getTags = function(callback) {//return tags
 };
 
 Post.getTag = function(tag, callback) {//return all articles for specific tag
-  mongodb.close();
   mongodb.open(function (err, db) {
     if (err) {
       return callback(err);
@@ -200,7 +196,6 @@ Post.getTag = function(tag, callback) {//return all articles for specific tag
 
 //return articles which have the searched keywords
 Post.search = function(keyword, callback) {
-  mongodb.close();
   mongodb.open(function (err, db) {
     if (err) {
       return callback(err);
