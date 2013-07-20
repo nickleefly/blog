@@ -1,5 +1,5 @@
 var mongodb = require('mongodb');
-var ee = require('events').EventEmitter();
+var ee = new (require('events').EventEmitter);
 var settings = settings = require('../settings');
 var Connection = Connection = mongodb.Connection;
 var access = new mongodb.Server(settings.host, Connection.DEFAULT_PORT);
