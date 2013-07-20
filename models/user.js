@@ -1,6 +1,8 @@
-var mongodb = require('./db');
+var db = require('./db');
+var mongodb = require('mongodb');
+
 var items;
-mongodb.get(function(client) {
+db.get(function(client) {
   items = new mongodb.Collection(client, 'users');
 });
 
@@ -20,7 +22,7 @@ User.prototype.save = function(callback) {//save user information
       email: this.email
   };
 
-  mongodb.get(function() {
+  db.get(function() {
     //insert data into users collections
     items.insert(user,{safe: true}, function(err, user){
       callback(err, user);//success return inserted user information
@@ -30,7 +32,7 @@ User.prototype.save = function(callback) {//save user information
 };
 
 User.get = function(name, callback){//read user information
-  mongodb.get(function() {
+  db.get(function() {
     //search name 
     items.findOne({
       name: name

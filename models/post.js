@@ -1,7 +1,9 @@
 var markdown = require('markdown').markdown;
-var mongodb = require('./db');
+var mongodb = require('mongodb');
+
+var db = require('./db');
 var items;
-mongodb.get(function(client) {
+db.get(function(client) {
   items = new mongodb.Collection(client, 'posts');
 });
 
@@ -37,7 +39,7 @@ Post.prototype.save = function(callback) {//save content
     pv: 0
   };
 
-  mongodb.get(function() {
+  db.get(function() {
     //insert into posts collection
     items.insert(post, {
       safe: true
@@ -50,7 +52,7 @@ Post.prototype.save = function(callback) {//save content
 
 Post.getTen = function(name, page, callback) {//read article and content
 
-  mongodb.get(function() {
+  db.get(function() {
     var query = {};
     if (name) {
       query.name = name;
@@ -72,7 +74,7 @@ Post.getTen = function(name, page, callback) {//read article and content
 
 Post.getOne = function(name, day, title, callback) { //get one article
 
-  mongodb.get(function() {
+  db.get(function() {
     // find article according to name time and title
     items.findOne({"name": name, "time.day": day, "title": title}, function (err, doc) {
       if (err) {
@@ -88,17 +90,21 @@ Post.getOne = function(name, day, title, callback) { //get one article
       callback(null, doc); //return article
     });
     //increase 1 to pv
-    items.update({"name":name,"time.day":day,"title":title},{$inc:{"pv":1}});
+    items.update({"name":name,"time.day":day,"title":title},{$inc:{"pv":1}}, function (err, doc) {
+      if (err) {
+        callback(err, null);
+      }
+      callback(null, doc);
+    });
   });
 };
 
 Post.getArchive = function(callback) {//return all articles
-  mongodb.get(function() {
+  db.get(function() {
     //return array including name, time and title
     items.find({},{"name":1,"time":1,"title":1}).sort({
       time:-1
     }).toArray(function(err, docs){
-      mongodb.close();
       if (err) {
         callback(err, null);
       }
@@ -108,22 +114,19 @@ Post.getArchive = function(callback) {//return all articles
 };
 
 Post.getTags = function(callback) {//return tags
-    mongodb.collection('posts', function(err, collection) {
+  db.get(function() {
+    //distinct get different value for specific key
+    items.distinct("tags.tag",function(err, docs){
       if (err) {
-        return callback(err);
+        callback(err, null);
       }
-      //distinct get different value for specific key
-      items.distinct("tags.tag",function(err, docs){
-        if (err) {
-          callback(err, null);
-        }
-        callback(null, docs);
-      });
+      callback(null, docs);
     });
+  });
 };
 
 Post.getTag = function(tag, callback) {//return all articles for specific tag
-  mongodb.get(function() {
+  db.get(function() {
     //return array only include name, time and title
     items.find({"tags.tag":tag},{"name":1,"time":1,"title":1}).sort({
       time:-1
@@ -138,7 +141,7 @@ Post.getTag = function(tag, callback) {//return all articles for specific tag
 
 //return articles which have the searched keywords
 Post.search = function(keyword, callback) {
-    mongodb.get(function() {
+  db.get(function() {
     var pattern = new RegExp("^.*"+keyword+".*$", "i");
     items.find({ $or: [ {"title":pattern}, {"post":pattern} ] },{"name":1,"time":1,"title":1}).sort({
       time:-1

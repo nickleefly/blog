@@ -1,6 +1,8 @@
-var mongodb = require('./db');
+var db = require('./db');
+var mongodb = require('mongodb');
+
 var items;
-mongodb.get(function(client) {
+db.get(function(client) {
   items = new mongodb.Collection(client, 'posts');
 });
 
@@ -19,7 +21,7 @@ Comment.prototype.save = function(callback) {
       title = this.title,
       comment = this.comment;
 
-  mongodb.get(function() {
+  db.get(function() {
     //depend on name time and title add comment
     items.findAndModify({"name":name,"time.day":day,"title":title}
     , [ ['time',-1] ]
